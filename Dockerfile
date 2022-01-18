@@ -3,6 +3,7 @@ WORKDIR /InsurApp
 COPY package.json .
 RUN npm install
 RUN npm install fabric-network
+COPY generatemsp.sh .
 COPY . .
 CMD node index.js
 EXPOSE 3080
