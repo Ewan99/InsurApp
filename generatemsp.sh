@@ -25,7 +25,7 @@ export FABRIC_CA_HOME=./orderers/insurers/orderer1/
 fabric-ca-client enroll --csr.hosts "peer1.insurance.com" -u http://peer1.insurance.com:secret@localhost:7054
 ##
 export FABRIC_CA_HOME=./orderers/insurers/orderer1/
-fabric-ca-client enroll --csr.hosts "admin1.insurance.com" -u http://admin1.insurance.com:secret@localhost:7054
+fabric-ca-client enroll --csr.hosts "admin.insurance.com" -u http://admin1.insurance.com:secret@localhost:7054
 ##
 export FABRIC_CA_HOME=./orderers/insurers/orderer1/
 fabric-ca-client enroll --csr.hosts "orderer1.garage.com" -u http://orderer1.garage.com:secret@localhost:7054
@@ -34,4 +34,4 @@ export FABRIC_CA_HOME=./orderers/insurers/orderer1/
 fabric-ca-client enroll --csr.hosts "peer1.garage.com" -u http://peer1.garage.com:secret@localhost:7054
 ##
 export FABRIC_CA_HOME=./orderers/insurers/orderer1/
-fabric-ca-client enroll --csr.hosts "admin1.garage.com" -u http://admin1.garage.com:secret@localhost:7054
+fabric-ca-client enroll --csr.hosts "admin.garage.com" -u http://admin1.garage.com:secret@localhost:7054
