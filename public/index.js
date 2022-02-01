@@ -15,7 +15,7 @@ const server = http.createServer((req, res) => {
 
         var filePath = path.resolve('./public' + fileUrl);
         const fileExt = path.extname(filePath);
-        if (fileExt == '.php') {
+        if (fileExt == '.html') {
             fs.exists(filePath, (exists) => {
                 if (!exists) {
                     filePath = path.resolve('./public/404.html');
