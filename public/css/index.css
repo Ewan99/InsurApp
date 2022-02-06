@@ -1,10 +1,5 @@
-div.title{
-    
-}
-
 #gradient {
     height:100vh;
-    width:100vw;
     background-color: #2cccc4;
     background-image: linear-gradient(to bottom right, #db545a, #2cccc4);
   }
@@ -18,3 +13,14 @@ h2.subtitle{
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.center {
+    position: absolute;
+    top: 20%;
+    left:45%;
+}
+
+body.body{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
