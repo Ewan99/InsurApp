@@ -13,14 +13,46 @@ h2.subtitle{
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.center {
-    position: absolute;
-    top: 20%;
-    left:45%;
+body{
+    padding-top: 15%;
 }
 
-body.body{
-    position: fixed;
-    top: 50%;
-    left: 50%;
+.center {
+    text-align: center;
+    margin-left:25%;
+}
+
+div.border{
+    border:3px;
+    padding:50px;
+    width:40%;
+    border-radius: 25px;
+    border-style:solid;
+    border-color: black;
+    box-shadow: 0px 0px 4px 1px  black;
+    background-color: rgba(255,255,255,0.4);
+}
+
+button{
+    border-radius:32px;
+    display:inline-block;
+    padding:8px 16px;
+    background-color:inherit;
+    cursor:pointer;
+    text-shadow: 5pt;
+    height:40px;
+    width:120px;
+    font-size:20px;
+    font-style:italic;
+}
+
+.ripple:active{
+    opacity:0.8
+}
+.ripple{
+    transition:opacity 0s
+}
+
+button:hover {
+    box-shadow: 0px 0px 4px 1px  black;
 }
