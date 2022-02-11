@@ -1,5 +1,5 @@
 #gradient {
-    height:100vh;
+    height:90vh;
     background-color: #2cccc4;
     background-image: linear-gradient(to bottom right, #db545a, #2cccc4);
   }
@@ -55,4 +55,12 @@ button{
 
 button:hover {
     box-shadow: 0px 0px 4px 1px  black;
+}
+
+@media only screen and (max-width: 500px) {
+  /* For tablets: */
+  .border {width: 15%;}
+  .body{width:auto;}
+  #gradient { height:100%; width:auto; }
+  .center{margin-left:0%;}
 }

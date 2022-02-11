@@ -9,6 +9,7 @@
   "author": "Ewan Duff",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "fabric-network": "^2.2.11"
   }
 }

@@ -76,14 +76,10 @@ Orderer: &OrdererDefaults
           Port: 7050
           ClientTLSCert: orderers/insurance/orderer1/tls/signcerts/cert.pem
           ServerTLSCert: orderers/insurance/orderer1/tls/signcerts/cert.pem
-        - Host: orderer2.insurance.com
+        - Host: orderer1.garage.com
           Port: 7050
-          ClientTLSCert: orderers/insurance/orderer2/tls/signcerts/cert.pem
-          ServerTLSCert: orderers/insurance/orderer2/tls/signcerts/cert.pem
-        - Host: orderer3.insurance.com
-          Port: 7050
-          ClientTLSCert: orderers/insurance/orderer3/tls/signcerts/cert.pem
-          ServerTLSCert: orderers/insurance/orderer3/tls/signcerts/cert.pem
+          ClientTLSCert: orderers/garage/orderer1/tls/signcerts/cert.pem
+          ServerTLSCert: orderers/garage/orderer1/tls/signcerts/cert.pem  
 # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
 # Batch Size: Controls the number of messages batched into a block
@@ -167,8 +163,7 @@ Profiles:
             OrdererType: etcdraft
             Addresses:
                 - orderer1.insurance.com:7050
-                - orderer2.insurance.com:7050
-                - orderer3.insurance.com:7050
+                - orderer1.garage.com:7050
             Organizations:
                 - *insurance
             Capabilities:

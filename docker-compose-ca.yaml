@@ -7,6 +7,7 @@ services:
     hostname: ca.insurapp.com
     environment:
       - FABRIC_CA_HOME=/hyperledger/fabric-ca-server
+      - FABRIC_CFG_PATH=.
       - FABRIC_CA_SERVER_CA_NAME=rootCA
       - FABRIC_CA_SERVER_TLS_ENABLED=false
       - FABRIC_CA_SERVER_TLS_CERTIFICATE=/hyperledger/fabric-ca-server-config/server.crt
