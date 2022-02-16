@@ -6,18 +6,17 @@ services:
     image: hyperledger/fabric-ca:1.4
     hostname: ca.insurapp.com
     environment:
-      - FABRIC_CA_HOME=/hyperledger/fabric-ca-server
-      - FABRIC_CFG_PATH=.
-      - FABRIC_CA_SERVER_CA_NAME=rootCA
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=rootca
       - FABRIC_CA_SERVER_TLS_ENABLED=false
-      - FABRIC_CA_SERVER_TLS_CERTIFICATE=/hyperledger/fabric-ca-server-config/server.crt
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/hyperledger/fabric-ca-server-config/server.key
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/server.crt
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/server.key
       - FABRIC_CA_SERVER_PORT=7054
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /hyperledger/fabric-ca-server-config/server.key -b admin:1907ed -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/server.crt --ca.keyfile /etc/hyperledger/fabric-ca-server-config/server.key -b admin:adminpw -d'
     volumes:
-      - ./ca:/hyperledger/fabric-ca-server-config
+      - ./ca:/etc/hyperledger/fabric-ca-server-config
     networks:
       fabric:
         aliases:
@@ -26,17 +25,17 @@ services:
     image: hyperledger/fabric-ca:1.4
     hostname: tlsca.insurapp.com
     environment:
-      - FABRIC_CA_HOME=/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=rootTLSCA
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=roottlsca
       - FABRIC_CA_SERVER_TLS_ENABLED=false
-      - FABRIC_CA_SERVER_TLS_CERTIFICATE=/hyperledger/fabric-ca-server-config/server.crt
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/hyperledger/fabric-ca-server-config/server.key
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/server.crt
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/server.key
       - FABRIC_CA_SERVER_PORT=8054
     ports:
       - "8054:8054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /hyperledger/fabric-ca-server-config/server.crt --ca.keyfile /hyperledger/fabric-ca-server-config/server.key -b admin:1907ed -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/server.crt --ca.keyfile /etc/hyperledger/fabric-ca-server-config/server.key -b admin:adminpw -d'
     volumes:
-      - ./tlsca:/hyperledger/fabric-ca-server-config
+      - ./tlsca:/etc/hyperledger/fabric-ca-server-config
     networks:
       fabric:
         aliases:
