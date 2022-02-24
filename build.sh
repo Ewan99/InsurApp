@@ -31,8 +31,6 @@ echo "####################################################"
 echo "#### Creating Genesis Block and Default Channel ####"
 echo "####################################################"
 echo
-mkdir admincerts
-mkdir channel-artifacts
 sudo configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID default
 sudo configtxgen -profile default -outputCreateChannelTx channel-artifacts/default.tx -channelID default
 echo
