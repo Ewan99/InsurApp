@@ -4,6 +4,7 @@ networks:
 services:
   ca.insurapp.com:
     image: hyperledger/fabric-ca:1.4
+    container_name: ca.insurapp.com
     hostname: ca.insurapp.com
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -23,6 +24,7 @@ services:
           - ca.insurapp.com
   tlsca.insurapp.com:
     image: hyperledger/fabric-ca:1.4
+    container_name: tlsca.insurapp.com
     hostname: tlsca.insurapp.com
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server

@@ -1,37 +1,32 @@
 Organizations:
-    - &org0
-        Name: org0
-# ID to load the MSP definition as
-        ID: org0
-# MSPDir is the filesystem path which contains the MSP configuration
-        MSPDir: orderers/org0/msp
+    - &iaorderer
+        Name: iaorderer
+        ID: iaorderer
+        MSPDir: orderers/iaorderer/msp
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('org0.member')"
+                Rule: "OR('iaorderer.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('org0.member')"
+                Rule: "OR('iaorderer.member')"
             Admins:
                 Type: Signature
-                Rule: "OR('org0.admin')"
-    - &org1
-            # DefaultOrg defines the organization which is used in the sampleconfig
-            # of the fabric.git development environment
-            Name: org1
-    # ID to load the MSP definition as
-            ID: org1
-            MSPDir: peers/org1/msp
+                Rule: "OR('iaorderer.admin')"
+    - &iapeer
+            Name: iapeer
+            ID: iapeer
+            MSPDir: peers/iapeer/msp
             Policies:
                 Readers:
                     Type: Signature
-                    Rule: "OR('org1.admin', 'org1.peer', 'org1.client')"
+                    Rule: "OR('iapeer.admin', 'iapeer.peer', 'iapeer.client')"
                 Writers:
                     Type: Signature
-                    Rule: "OR('org1.admin', 'org1.client')"
+                    Rule: "OR('iapeer.admin', 'iapeer.client')"
                 Admins:
                     Type: Signature
-                    Rule: "OR('org1.admin')"
+                    Rule: "OR('iapeer.admin')"
 Capabilities:
     Channel: &ChannelCapabilities
         V1_4_2: true
@@ -72,18 +67,10 @@ Orderer: &OrdererDefaults
     OrdererType: etcdraft
     EtcdRaft:
         Consenters:
-        - Host: orderer1.org0.com
+        - Host: orderer1.iaorderer.com
           Port: 7050
-          ClientTLSCert: orderers/org0/orderer1/tls/signcerts/cert.pem
-          ServerTLSCert: orderers/org0/orderer1/tls/signcerts/cert.pem
-        - Host: orderer2.org0.com
-          Port: 7050
-          ClientTLSCert: orderers/org0/orderer2/tls/signcerts/cert.pem
-          ServerTLSCert: orderers/org0/orderer2/tls/signcerts/cert.pem
-        - Host: orderer3.org0.com
-          Port: 7050
-          ClientTLSCert: orderers/org0/orderer3/tls/signcerts/cert.pem
-          ServerTLSCert: orderers/org0/orderer3/tls/signcerts/cert.pem
+          ClientTLSCert: orderers/iaorderer/orderer1/tls/signcerts/cert.pem
+          ServerTLSCert: orderers/iaorderer/orderer1/tls/signcerts/cert.pem
 # Batch Timeout: The amount of time to wait before creating a batch
     BatchTimeout: 2s
 # Batch Size: Controls the number of messages batched into a block
@@ -155,7 +142,7 @@ Profiles:
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *org1
+                - *iapeer
             Capabilities:
                 <<: *ApplicationCapabilities
     genesis:
@@ -166,18 +153,16 @@ Profiles:
             <<: *OrdererDefaults
             OrdererType: etcdraft
             Addresses:
-                - orderer1.org0.com:7050
-                - orderer2.org0.com:7050
-                - orderer3.org0.com:7050
+                - orderer1.iaorderer.com:7050
             Organizations:
-                - *org0
+                - *iaorderer
             Capabilities:
                 <<: *OrdererCapabilities
         Application:
             <<: *ApplicationDefaults
             Organizations:
-            - <<: *org0
+            - <<: *iaorderer
         Consortiums:
             SampleConsortium:
                 Organizations:
-                - *org1
+                - *iapeer
