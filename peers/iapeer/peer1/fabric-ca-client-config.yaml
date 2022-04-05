@@ -99,7 +99,7 @@ tls:
 #
 #############################################################################
 csr:
-  cn: peer1.org1.com
+  cn: peer1.iapeer.com
   keyrequest:
     algo: ecdsa
     size: 256

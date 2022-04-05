@@ -71,8 +71,16 @@ Orderer: &OrdererDefaults
           Port: 7050
           ClientTLSCert: orderers/iaorderer/orderer1/tls/signcerts/cert.pem
           ServerTLSCert: orderers/iaorderer/orderer1/tls/signcerts/cert.pem
+        - Host: orderer2.iaorderer.com
+          Port: 7050
+          ClientTLSCert: orderers/iaorderer/orderer2/tls/signcerts/cert.pem
+          ServerTLSCert: orderers/iaorderer/orderer2/tls/signcerts/cert.pem
+        - Host: orderer3.iaorderer.com
+          Port: 7050
+          ClientTLSCert: orderers/iaorderer/orderer3/tls/signcerts/cert.pem
+          ServerTLSCert: orderers/iaorderer/orderer3/tls/signcerts/cert.pem
 # Batch Timeout: The amount of time to wait before creating a batch
-    BatchTimeout: 2s
+    BatchTimeout: 10s
 # Batch Size: Controls the number of messages batched into a block
     BatchSize:
 # Max Message Count: The maximum number of messages to permit in a batch
@@ -154,6 +162,8 @@ Profiles:
             OrdererType: etcdraft
             Addresses:
                 - orderer1.iaorderer.com:7050
+                - orderer2.iaorderer.com:7050
+                - orderer3.iaorderer.com:7050
             Organizations:
                 - *iaorderer
             Capabilities:

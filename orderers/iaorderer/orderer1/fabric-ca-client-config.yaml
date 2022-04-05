@@ -61,8 +61,8 @@ tls:
   # TLS section for secure socket connection
   certfiles:
   client:
-    certfile:
-    keyfile:
+    certfile: orderers/iaorderer/orderer1/tls/signcerts/cert.pem
+    keyfile: orderers/iaorderer/orderer1/tls/keystore/server.key
 
 #############################################################################
 #  Certificate Signing Request section for generating the CSR for an
