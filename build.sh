@@ -119,41 +119,39 @@ echo "##########################"
 echo "#### Configuring MSPs ####"
 echo "##########################"
 echo
+echo "Copyting CA Server Certs..."
 sudo cp ca/orderer-ca-server.crt orderers/iaorderer/msp/cacerts
 sudo cp ca/peer-ca-server.crt peers/iapeer/msp/cacerts
 sudo cp tlsca/orderer-tlsca-server.crt orderers/iaorderer/msp/tlscacerts
 sudo cp tlsca/peer-tlsca-server.crt peers/iapeer/msp/tlscacerts
-
+echo "Copyting Orderer Admin Private Keys..."
 sudo cp orderers/iaorderer/orderer1/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin1.pem
 sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin2.pem
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin3.pem
-
-sudo cp peers/iapeer/peer1/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin1.pem
-sudo cp peers/iapeer/peer2/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin2.pem
-sudo cp peers/iapeer/peer3/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin3.pem
-
 sudo cp orderers/iaorderer/orderer1/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer1/msp/admincerts
 sudo cp orderers/iaorderer/orderer1/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer1/msp/user/admin/admincerts
 sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer2/msp/admincerts
 sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer2/msp/user/admin/admincerts
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer3/msp/admincerts
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer3/msp/user/admin/admincerts
-
+echo "Copyting Peer Admin Private Keys..."
+sudo cp peers/iapeer/peer1/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin1.pem
+sudo cp peers/iapeer/peer2/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin2.pem
+sudo cp peers/iapeer/peer3/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin3.pem
 sudo cp peers/iapeer/peer1/msp/user/admin/signcerts/cert.pem peers/iapeer/peer1/msp/admincerts
 sudo cp peers/iapeer/peer1/msp/user/admin/signcerts/cert.pem peers/iapeer/peer1/msp/user/admin/admincerts/
-
 sudo cp peers/iapeer/peer2/msp/user/admin/signcerts/cert.pem peers/iapeer/peer2/msp/admincerts
 sudo cp peers/iapeer/peer2/msp/user/admin/signcerts/cert.pem peers/iapeer/peer2/msp/user/admin/admincerts/
-
 sudo cp peers/iapeer/peer3/msp/user/admin/signcerts/cert.pem peers/iapeer/peer3/msp/admincerts
 sudo cp peers/iapeer/peer3/msp/user/admin/signcerts/cert.pem peers/iapeer/peer3/msp/user/admin/admincerts/
-
 echo
 echo "####################################################"
 echo "#### Creating Genesis Block and Default Channel ####"
 echo "####################################################"
 echo
+echo "Creating Genesis Block..."
 sudo configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID default
+echo "Creating Default Channel..."
 sudo configtxgen -profile default -outputCreateChannelTx channel-artifacts/default.tx -channelID default
 echo
 echo "#####################################"
@@ -161,15 +159,32 @@ echo "#### Starting Blockchain Network ####"
 echo "#####################################"
 echo
 sudo docker-compose up -d
+echo
 echo "All peers created! - Waiting 10s for peers to initalize"
-sleep 30
+sleep 10
 echo
 echo "############################################"
 echo "#### Creating and joining Peer Channels ####"
 echo "############################################"
 echo
-#sudo docker exec -it cli bash -c peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/server.crt
-#sudo docker exec -it cli bash -c peer channel join -b default.block -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/server.crt
+echo "Creating Peer Channel..."
+sudo docker exec cli peer channel create -o orderer1.iaorderer.com:7050 -c default -f channel-artifacts/default.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
+echo "Joining Peer channel..."
+sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b genesis.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/server.crt
+echo
+echo "#########################################"
+echo "#### Install & Instantiate Chaincode ####"
+echo "#########################################"
+echo
+#sudo docker cp chaincode cli:/opt/gopath/src/github.com/chaincode
+echo
+echo "Installing chaincode..."
+echo
+sudo docker exec cli peer chaincode install -n chaincode -v 1.0 -p github.com/chaincode -l "golang"
+echo
+echo "Instantiating chaincode..."
+echo
+sudo docker exec cli peer chaincode instantiate -o peer1.iapeer.com:7052 -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":[]}'
 echo
 echo "###################"
 echo "#### Finished! ####"

@@ -9,6 +9,8 @@ sudo docker rm -f peer1.iapeer.com
 sudo docker rm -f peer2.iapeer.com
 sudo docker rm -f peer3.iapeer.com
 sudo docker rm -f cli
+
+sudo docker volume prune -f
 ###############################################
 sudo rm -rf ca/*
 sudo rm -rf tlsca/*
