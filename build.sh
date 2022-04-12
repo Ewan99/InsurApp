@@ -164,8 +164,8 @@ echo "############################################"
 echo "#### Creating and joining Peer Channels ####"
 echo "############################################"
 echo
-echo "Creating Peer Channel..."
-sudo docker exec cli peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
+#echo "Creating Peer Channel..."
+#sudo docker exec cli peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
 echo "Joining Peer channel..."
 sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b channel-artifacts/genesis.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
 echo
