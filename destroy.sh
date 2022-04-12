@@ -11,6 +11,7 @@ sudo docker rm -f peer3.iapeer.com
 sudo docker rm -f cli
 
 sudo docker volume prune -f
+sudo docker image prune -f
 ###############################################
 sudo rm -rf ca/*
 sudo rm -rf tlsca/*

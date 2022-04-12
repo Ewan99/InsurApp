@@ -1,32 +1,46 @@
 Organizations:
     - &iaorderer
         Name: iaorderer
-        ID: iaorderer
+        ID: iaordererMSP
         MSPDir: orderers/iaorderer/msp
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('iaorderer.member')"
+                Rule: "OR('iaordererMSP.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('iaorderer.member')"
+                Rule: "OR('iaordererMSP.member')"
             Admins:
                 Type: Signature
-                Rule: "OR('iaorderer.admin')"
+                Rule: "OR('iaordererMSP.admin')"
+
     - &iapeer
             Name: iapeer
-            ID: iapeer
+            ID: iapeerMSP
             MSPDir: peers/iapeer/msp
             Policies:
                 Readers:
                     Type: Signature
-                    Rule: "OR('iapeer.admin', 'iapeer.peer', 'iapeer.client')"
+                    Rule: "OR('iapeerMSP.admin', 'iapeerMSP.peer', 'iapeerMSP.client')"
                 Writers:
                     Type: Signature
-                    Rule: "OR('iapeer.admin', 'iapeer.client')"
+                    Rule: "OR('iapeerMSP.admin', 'iapeerMSP.client')"
                 Admins:
                     Type: Signature
-                    Rule: "OR('iapeer.admin')"
+                    Rule: "OR('iapeerMSP.admin')"
+                Endorsement:
+                    Type: Signature
+                    Rule: "OR('iapeerMSP.peer')"
+            AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer1.iapeer.com
+              Port: 7051
+            - Host: peer2.iapeer.com
+              Port: 7051
+            - Host: peer3.iapeer.com
+              Port: 7051
 Capabilities:
     Channel: &ChannelCapabilities
         V1_4_2: true

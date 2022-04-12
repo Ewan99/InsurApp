@@ -11,8 +11,8 @@ echo "################################"
 echo
 echo "Starting CA Containers..."
 sudo docker-compose -f docker-compose-ca.yaml up -d
-echo "CA Containers up! Waiting 20s for containers to initialize..."
-sleep 20
+echo "CA Containers up! Waiting 10s for containers to initialize..."
+sleep 10
 echo
 echo "#########################"
 echo "#### Configuring CAs ####"
@@ -68,8 +68,6 @@ export FABRIC_CA_HOME=./orderers/iaorderer/orderer2/msp/user/
 fabric-ca-client enroll --csr.hosts "admin2.iaorderer.com" -u http://admin2.iaorderer.com:adminpw@localhost:7055 -M admin
 export FABRIC_CA_HOME=./orderers/iaorderer/orderer3/msp/user/
 fabric-ca-client enroll --csr.hosts "admin3.iaorderer.com" -u http://admin3.iaorderer.com:adminpw@localhost:7055 -M admin
-
-
 echo
 echo "#############################"
 echo "#### Configuring TLS CAs ####"
@@ -105,7 +103,7 @@ fabric-ca-client enroll --csr.hosts "orderer2.iaorderer.com" -u http://orderer2.
 export FABRIC_CA_HOME=./orderers/iaorderer/orderer3/
 fabric-ca-client enroll --csr.hosts "orderer3.iaorderer.com" -u http://orderer3.iaorderer.com:secret@localhost:8055 -M tls
 
-
+#rename keys
 sudo mv orderers/iaorderer/orderer1/tls/keystore/* orderers/iaorderer/orderer1/tls/keystore/server.key
 sudo mv orderers/iaorderer/orderer2/tls/keystore/* orderers/iaorderer/orderer2/tls/keystore/server.key
 sudo mv orderers/iaorderer/orderer3/tls/keystore/* orderers/iaorderer/orderer3/tls/keystore/server.key
@@ -113,7 +111,6 @@ sudo mv orderers/iaorderer/orderer3/tls/keystore/* orderers/iaorderer/orderer3/t
 sudo mv peers/iapeer/peer1/tls/keystore/* peers/iapeer/peer1/tls/keystore/server.key
 sudo mv peers/iapeer/peer2/tls/keystore/* peers/iapeer/peer2/tls/keystore/server.key
 sudo mv peers/iapeer/peer3/tls/keystore/* peers/iapeer/peer3/tls/keystore/server.key
-
 echo
 echo "##########################"
 echo "#### Configuring MSPs ####"
@@ -160,23 +157,24 @@ echo "#####################################"
 echo
 sudo docker-compose up -d
 echo
-echo "All peers created! - Waiting 10s for peers to initalize"
-sleep 10
+echo "All peers created! - Waiting 15s for peers to initalize"
+sleep 15
 echo
 echo "############################################"
 echo "#### Creating and joining Peer Channels ####"
 echo "############################################"
 echo
 echo "Creating Peer Channel..."
-sudo docker exec cli peer channel create -o orderer1.iaorderer.com:7050 -c default -f channel-artifacts/default.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
+sudo docker exec cli peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
 echo "Joining Peer channel..."
-sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b genesis.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/server.crt
+sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b channel-artifacts/genesis.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
+echo
+echo "Channel joined! - Waiting 5s for peers to initalize"
+sleep 5
 echo
 echo "#########################################"
 echo "#### Install & Instantiate Chaincode ####"
 echo "#########################################"
-echo
-#sudo docker cp chaincode cli:/opt/gopath/src/github.com/chaincode
 echo
 echo "Installing chaincode..."
 echo
@@ -184,7 +182,7 @@ sudo docker exec cli peer chaincode install -n chaincode -v 1.0 -p github.com/ch
 echo
 echo "Instantiating chaincode..."
 echo
-sudo docker exec cli peer chaincode instantiate -o peer1.iapeer.com:7052 -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":[]}'
+sudo docker exec cli peer chaincode instantiate -o orderer1.iaorderer.com:7050 -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":[]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
 echo
 echo "###################"
 echo "#### Finished! ####"
