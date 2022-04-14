@@ -147,7 +147,7 @@ echo "#### Creating Genesis Block and Default Channel ####"
 echo "####################################################"
 echo
 echo "Creating Genesis Block..."
-sudo configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID default
+sudo configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID genesis
 echo "Creating Default Channel..."
 sudo configtxgen -profile default -outputCreateChannelTx channel-artifacts/default.tx -channelID default
 echo
@@ -157,24 +157,24 @@ echo "#####################################"
 echo
 sudo docker-compose up -d
 echo
-echo "All peers created! - Waiting 15s for peers to initalize"
-sleep 15
+echo "All peers created! - Waiting 5s for peers to initalize"
+sleep 5
 echo
 echo "############################################"
 echo "#### Creating and joining Peer Channels ####"
 echo "############################################"
 echo
-#echo "Creating Peer Channel..."
-#sudo docker exec cli peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
+echo "Creating Peer Channel..."
+sudo docker exec cli peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt
 echo "Joining Peer channel..."
-sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b channel-artifacts/genesis.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
-echo
-echo "Channel joined! - Waiting 5s for peers to initalize"
-sleep 5
+sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b default.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/orderer-tlsca-server.crt
 echo
 echo "#########################################"
 echo "#### Install & Instantiate Chaincode ####"
 echo "#########################################"
+#echo "Packaging & Installing chaincode..."
+#echo
+#sudo docker exec cli peer chaincode package -n chaincode -v 1.0 -p github.com/chaincode -l "golang"
 echo
 echo "Installing chaincode..."
 echo
@@ -182,7 +182,7 @@ sudo docker exec cli peer chaincode install -n chaincode -v 1.0 -p github.com/ch
 echo
 echo "Instantiating chaincode..."
 echo
-sudo docker exec cli peer chaincode instantiate -o orderer1.iaorderer.com:7050 -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":[]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/peer-tlsca-server.crt
+sudo docker exec cli peer chaincode instantiate -o orderer1.iaorderer.com:7050 -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":["InitLedger"]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt
 echo
 echo "###################"
 echo "#### Finished! ####"

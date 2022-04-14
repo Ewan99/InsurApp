@@ -127,6 +127,8 @@ services:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/peer1/msp:/etc/hyperledger/fabric/msp
         - ./peers/iapeer/peer1/tls:/etc/hyperledger/fabric/tls
+        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/intermediatecerts
+        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/tlsintermediatecerts
         - peer1.iapeer.com:/var/hyperledger/production
     networks:
       fabric:
@@ -162,6 +164,8 @@ services:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/peer2/msp:/etc/hyperledger/fabric/msp
         - ./peers/iapeer/peer2/tls:/etc/hyperledger/fabric/tls
+        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/intermediatecerts
+        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/tlsintermediatecerts
         - peer2.iapeer.com:/var/hyperledger/production
     networks:
       fabric:
@@ -197,6 +201,8 @@ services:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/peer3/msp:/etc/hyperledger/fabric/msp
         - ./peers/iapeer/peer3/tls:/etc/hyperledger/fabric/tls
+        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/intermediatecerts
+        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/tlsintermediatecerts
         - peer3.iapeer.com:/var/hyperledger/production
     networks:
       fabric:
@@ -210,8 +216,8 @@ services:
     stdin_open: true
     environment:
       - GOPATH=/opt/gopath
+      - GO111MODULE=on
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - FABRIC_LOGGING_SPEC=DEBUG
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer1.iapeer.com:7051
@@ -226,6 +232,7 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/
+        - ./orderers/iaorderer/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
         - ./chaincode/:/opt/gopath/src/github.com/chaincode
     networks:

@@ -1,36 +1,36 @@
 Organizations:
     - &iaorderer
         Name: iaorderer
-        ID: iaordererMSP
+        ID: iaorderer
         MSPDir: orderers/iaorderer/msp
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('iaordererMSP.member')"
+                Rule: "OR('iaorderer.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('iaordererMSP.member')"
+                Rule: "OR('iaorderer.member')"
             Admins:
                 Type: Signature
-                Rule: "OR('iaordererMSP.admin')"
+                Rule: "OR('iaorderer.admin')"
 
     - &iapeer
             Name: iapeer
-            ID: iapeerMSP
+            ID: iapeer
             MSPDir: peers/iapeer/msp
             Policies:
                 Readers:
                     Type: Signature
-                    Rule: "OR('iapeerMSP.member')"
+                    Rule: "OR('iapeer.member', 'iapeer.peer', 'iapeer.client')"
                 Writers:
                     Type: Signature
-                    Rule: "OR('iapeerMSP.member')"
+                    Rule: "OR('iapeer.admin', 'iapeer.client')"
                 Admins:
                     Type: Signature
-                    Rule: "OR('iapeerMSP.admin')"
+                    Rule: "OR('iapeer.admin')"
                 Endorsement:
                     Type: Signature
-                    Rule: "OR('iapeerMSP.peer')"
+                    Rule: "OR('iapeer.peer')"
             AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
@@ -180,12 +180,14 @@ Profiles:
                 - orderer3.iaorderer.com:7050
             Organizations:
                 - *iaorderer
+                - *iapeer
             Capabilities:
                 <<: *OrdererCapabilities
         Application:
             <<: *ApplicationDefaults
             Organizations:
             - <<: *iaorderer
+            - <<: *iapeer
         Consortiums:
             SampleConsortium:
                 Organizations:
