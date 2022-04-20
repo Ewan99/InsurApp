@@ -102,6 +102,7 @@ services:
     hostname: peer1.iapeer.com
     image: hyperledger/fabric-peer:1.4.4
     environment:
+      - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=true
@@ -127,8 +128,11 @@ services:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/peer1/msp:/etc/hyperledger/fabric/msp
         - ./peers/iapeer/peer1/tls:/etc/hyperledger/fabric/tls
-        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/intermediatecerts
-        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/tlsintermediatecerts
+        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/peer-intermediatecerts
+        - ./orderers/iaorderer/msp/cacerts:/etc/hyperledger/fabric/msp/orderer-intermediatecerts
+        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/peer-tlsintermediatecerts
+        - ./orderers/iaorderer/msp/tlscacerts:/etc/hyperledger/fabric/msp/orderer-tlsintermediatecerts
+        - ./chaincode:/usr/local/go/src/chaincode
         - peer1.iapeer.com:/var/hyperledger/production
     networks:
       fabric:
@@ -164,8 +168,10 @@ services:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/peer2/msp:/etc/hyperledger/fabric/msp
         - ./peers/iapeer/peer2/tls:/etc/hyperledger/fabric/tls
-        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/intermediatecerts
-        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/tlsintermediatecerts
+        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/peer-intermediatecerts
+        - ./orderers/iaorderer/msp/cacerts:/etc/hyperledger/fabric/msp/orderer-intermediatecerts
+        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/peer-tlsintermediatecerts
+        - ./orderers/iaorderer/msp/tlscacerts:/etc/hyperledger/fabric/msp/orderer-tlsintermediatecerts
         - peer2.iapeer.com:/var/hyperledger/production
     networks:
       fabric:
@@ -201,8 +207,10 @@ services:
         - /var/run/:/host/var/run/
         - ./peers/iapeer/peer3/msp:/etc/hyperledger/fabric/msp
         - ./peers/iapeer/peer3/tls:/etc/hyperledger/fabric/tls
-        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/intermediatecerts
-        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/tlsintermediatecerts
+        - ./peers/iapeer/msp/cacerts:/etc/hyperledger/fabric/msp/peer-intermediatecerts
+        - ./orderers/iaorderer/msp/cacerts:/etc/hyperledger/fabric/msp/orderer-intermediatecerts
+        - ./peers/iapeer/msp/tlscacerts:/etc/hyperledger/fabric/msp/peer-tlsintermediatecerts
+        - ./orderers/iaorderer/msp/tlscacerts:/etc/hyperledger/fabric/msp/orderer-tlsintermediatecerts
         - peer3.iapeer.com:/var/hyperledger/production
     networks:
       fabric:
@@ -216,7 +224,7 @@ services:
     stdin_open: true
     environment:
       - GOPATH=/opt/gopath
-      - GO111MODULE=on
+      - GO111MODULE=auto
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=INFO
       - CORE_PEER_ID=cli
@@ -234,6 +242,6 @@ services:
         - ./peers/iapeer/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/
         - ./orderers/iaorderer/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
-        - ./chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./chaincode/:/opt/gopath/src/chaincode
     networks:
       fabric:

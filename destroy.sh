@@ -1,3 +1,9 @@
+echo
+echo "###############################"
+echo "#### Destroying Containers ####"
+echo "###############################"
+echo
+sudo docker rm -f InsurApp-Web
 sudo docker rm -f ca.orderer.insurapp.com
 sudo docker rm -f tlsca.orderer.insurapp.com
 sudo docker rm -f ca.peer.insurapp.com
@@ -9,9 +15,21 @@ sudo docker rm -f peer1.iapeer.com
 sudo docker rm -f peer2.iapeer.com
 sudo docker rm -f peer3.iapeer.com
 sudo docker rm -f cli
-
+echo
+echo "####################################"
+echo "#### Pruning Volumes and Images ####"
+echo "####################################"
+echo
+echo " ---Volumes"
 sudo docker volume prune -f
+echo
+echo " ---Images"
 sudo docker image prune -f
+echo
+echo "#################################"
+echo "#### Deleting Certs and Keys ####"
+echo "#################################"
+echo
 ###############################################
 sudo rm -rf ca/*
 sudo rm -rf tlsca/*
@@ -201,3 +219,9 @@ sudo rm -rf roottlsca-admin-peer/msp/signcerts/*
 sudo rm -rf roottlsca-admin-peer/msp/user/*
 sudo rm -rf roottlsca-admin-peer/msp/IssuerPublicKey
 sudo rm -rf roottlsca-admin-peer/msp/IssuerRevocationPublicKey
+echo " Certs and Keys deleted"
+echo
+echo "##########################"
+echo "#### Finished Destroy ####"
+echo "##########################"
+echo

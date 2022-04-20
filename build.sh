@@ -1,17 +1,31 @@
-#echo "#####################################"
-#echo "#### Configuring Web Application ####"
-#echo "#####################################"
-#echo
-#sudo docker run --name InsurApp-Web --network=host -p 3080:3080 -d docker-insurapp
-#echo "Web App Server enabled!"
-#echo
-echo "################################"
-echo "#### Starting CA Servers ####"
-echo "################################"
+GREEN='\033[0;32m'
+NC='\033[0m'
+echo "________________________________________________________"
+echo "  _____                                                 "
+echo " |_   _|                           /\                   "
+echo "   | |   _ __   ___  _   _  _ __  /  \    _ __   _ __   "
+echo "   | |  | '_ \ / __|| | | || '__|/ /\ \  | '_ \ | '_ \  "
+echo "  _| |_ | | | |\__ \| |_| || |  / ____ \ | |_) || |_) | "
+echo " |_____||_| |_||___/ \__,_||_| /_/    \_\| .__/ | .__/  "
+echo "                                         | |    | |     "
+echo "                                         |_|    |_|     "
+echo "________________________________________________________"
 echo
-echo "Starting CA Containers..."
+echo "#####################################"
+echo "#### Configuring Web Application ####"
+echo "#####################################"
+echo
+sudo docker run --name InsurApp-Web --network=host -p 3080:3080 -d docker-insurapp
+echo
+printf " ${GREEN}Web App Server enabled!${NC}\n"
+echo
+echo "#############################"
+echo "#### Starting CA Servers ####"
+echo "#############################"
+echo
+printf " ${GREEN}Starting CA Containers...${NC}\n"
 sudo docker-compose -f docker-compose-ca.yaml up -d
-echo "CA Containers up! Waiting 10s for containers to initialize..."
+printf " ${GREEN}CA Containers up! Waiting 10s for containers to initialize...${NC}\n"
 sleep 10
 echo
 echo "#########################"
@@ -116,12 +130,12 @@ echo "##########################"
 echo "#### Configuring MSPs ####"
 echo "##########################"
 echo
-echo "Copyting CA Server Certs..."
+printf " ${GREEN}Copyting CA Server Certs...${NC}\n"
 sudo cp ca/orderer-ca-server.crt orderers/iaorderer/msp/cacerts
 sudo cp ca/peer-ca-server.crt peers/iapeer/msp/cacerts
 sudo cp tlsca/orderer-tlsca-server.crt orderers/iaorderer/msp/tlscacerts
 sudo cp tlsca/peer-tlsca-server.crt peers/iapeer/msp/tlscacerts
-echo "Copyting Orderer Admin Private Keys..."
+printf " ${GREEN}Copyting Orderer Admin Private Keys...${NC}\n"
 sudo cp orderers/iaorderer/orderer1/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin1.pem
 sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin2.pem
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin3.pem
@@ -131,7 +145,7 @@ sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/i
 sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer2/msp/user/admin/admincerts
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer3/msp/admincerts
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/orderer3/msp/user/admin/admincerts
-echo "Copyting Peer Admin Private Keys..."
+printf " ${GREEN}Copyting Peer Admin Private Keys...${NC}\n"
 sudo cp peers/iapeer/peer1/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin1.pem
 sudo cp peers/iapeer/peer2/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin2.pem
 sudo cp peers/iapeer/peer3/msp/user/admin/signcerts/cert.pem peers/iapeer/msp/admincerts/peeradmin3.pem
@@ -146,9 +160,9 @@ echo "####################################################"
 echo "#### Creating Genesis Block and Default Channel ####"
 echo "####################################################"
 echo
-echo "Creating Genesis Block..."
+printf " ${GREEN}Creating Genesis Block...${NC}\n"
 sudo configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID genesis
-echo "Creating Default Channel..."
+printf " ${GREEN}Creating Default Channel...${NC}\n"
 sudo configtxgen -profile default -outputCreateChannelTx channel-artifacts/default.tx -channelID default
 echo
 echo "#####################################"
@@ -157,34 +171,36 @@ echo "#####################################"
 echo
 sudo docker-compose up -d
 echo
-echo "All peers created! - Waiting 5s for peers to initalize"
+printf " ${GREEN}All peers created! - Waiting 5s for peers to initalize${NC}\n"
 sleep 5
 echo
 echo "############################################"
 echo "#### Creating and joining Peer Channels ####"
 echo "############################################"
 echo
-echo "Creating Peer Channel..."
+printf " ${GREEN}Creating Peer Channel...${NC}\n"
 sudo docker exec cli peer channel create -f channel-artifacts/default.tx -c default -o orderer1.iaorderer.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt
-echo "Joining Peer channel..."
+printf " ${GREEN}Joining Peer channel...${NC}\n"
 sudo docker exec cli peer channel join -o orderer1.iaorderer.com:7050 -b default.block --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iapeer/msp/tlscacerts/orderer-tlsca-server.crt
 echo
 echo "#########################################"
 echo "#### Install & Instantiate Chaincode ####"
 echo "#########################################"
-#echo "Packaging & Installing chaincode..."
+printf " ${GREEN}Packaging & Installing chaincode...${NC}\n"
+echo
+sudo docker exec cli mkdir /opt/gopath/src/chaincode/packaged
+sudo docker exec cli peer chaincode package /opt/gopath/src/chaincode/packaged/chaincode.tar.gz -n chaincode -v 1.0 -p chaincode
+echo
+printf " ${GREEN}Installing chaincode...${NC}\n"
+echo
+sudo docker exec cli peer chaincode install -n chaincode -v 1.0 -p chaincode/packaged chaincode.tar.gz
+sudo docker exec cli cp /opt/gopath/src/chaincode/packaged/chaincode.tar.gz /usr/local/src
 #echo
-#sudo docker exec cli peer chaincode package -n chaincode -v 1.0 -p github.com/chaincode -l "golang"
+#printf " ${GREEN}Instantiating chaincode...${NC}\n"
+#echo
+#sudo docker exec peer1.iapeer.com GO111MODULE=auto peer chaincode instantiate -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":["InitLedger"]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt #/etc/hyperledger/fabric/msp/orderer-tlsintermediatecerts/orderer-tlsca-server.crt    
 echo
-echo "Installing chaincode..."
-echo
-sudo docker exec cli peer chaincode install -n chaincode -v 1.0 -p github.com/chaincode -l "golang"
-echo
-echo "Instantiating chaincode..."
-echo
-sudo docker exec cli peer chaincode instantiate -o orderer1.iaorderer.com:7050 -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":["InitLedger"]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt
-echo
-echo "###################"
-echo "#### Finished! ####"
-echo "###################"
+echo "########################"
+echo "#### Finished Build ####"
+echo "########################"
 echo
