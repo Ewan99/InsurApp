@@ -1,4 +1,4 @@
-module chaincode
+module github.com/chaincode
 
 go 1.18
 

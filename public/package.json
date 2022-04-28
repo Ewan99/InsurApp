@@ -1,0 +1,13 @@
+{
+    "name": "insurapp-web",
+    "version": "1.0.0",
+    "description": "InsurApp Web Server",
+    "author": "Ewan Duff",
+    "main": "public/index.js",
+    "scripts": {
+      "start": "node public/index.js"
+    },
+    "dependencies": {
+      "express": "^4.16.1"
+    }
+  }

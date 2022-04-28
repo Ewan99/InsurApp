@@ -219,6 +219,12 @@ sudo rm -rf roottlsca-admin-peer/msp/signcerts/*
 sudo rm -rf roottlsca-admin-peer/msp/user/*
 sudo rm -rf roottlsca-admin-peer/msp/IssuerPublicKey
 sudo rm -rf roottlsca-admin-peer/msp/IssuerRevocationPublicKey
+###############################################
+#sudo rm -rf chaincode/go.mod
+#sudo rm -rf chaincode/go.sum
+#sudo rm -rf chaincode/vendor
+sudo rm -rf chaincode/chaincode.tar.gz
+###############################################
 echo " Certs and Keys deleted"
 echo
 echo "##########################"

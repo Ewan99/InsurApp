@@ -1,3 +1,4 @@
+export PATH=/home/ewan/Documents/InsurAppRemake/bin:$PATH
 GREEN='\033[0;32m'
 NC='\033[0m'
 echo "________________________________________________________"
@@ -15,7 +16,9 @@ echo "#####################################"
 echo "#### Configuring Web Application ####"
 echo "#####################################"
 echo
-sudo docker run --name InsurApp-Web --network=host -p 3080:3080 -d docker-insurapp
+sudo docker build -t insurapp-web ./public
+sudo docker run --name InsurApp-Web --network=host -p 3080:3080 -d insurapp-web
+sudo docker start InsurApp-Web
 echo
 printf " ${GREEN}Web App Server enabled!${NC}\n"
 echo
@@ -161,9 +164,9 @@ echo "#### Creating Genesis Block and Default Channel ####"
 echo "####################################################"
 echo
 printf " ${GREEN}Creating Genesis Block...${NC}\n"
-sudo configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID genesis
+configtxgen -profile genesis -outputBlock channel-artifacts/genesis.block -channelID genesis
 printf " ${GREEN}Creating Default Channel...${NC}\n"
-sudo configtxgen -profile default -outputCreateChannelTx channel-artifacts/default.tx -channelID default
+configtxgen -profile default -outputCreateChannelTx channel-artifacts/default.tx -channelID default
 echo
 echo "#####################################"
 echo "#### Starting Blockchain Network ####"
@@ -186,19 +189,21 @@ echo
 echo "#########################################"
 echo "#### Install & Instantiate Chaincode ####"
 echo "#########################################"
-printf " ${GREEN}Packaging & Installing chaincode...${NC}\n"
+printf " ${GREEN}Packaging Chaincode Requirements...${NC}\n"
 echo
-sudo docker exec cli mkdir /opt/gopath/src/chaincode/packaged
-sudo docker exec cli peer chaincode package /opt/gopath/src/chaincode/packaged/chaincode.tar.gz -n chaincode -v 1.0 -p chaincode
+#sudo docker exec cli mkdir /opt/gopath/src/chaincode/packaged
+sudo docker exec cli peer lifecycle chaincode package chaincode.tar.gz -p chaincode --label chaincodePackage #/opt/gopath/src/chaincode/packaged/
+#sudo docker exec cli cp /opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode.tar.gz /opt/gopath/src/chaincode
 echo
 printf " ${GREEN}Installing chaincode...${NC}\n"
 echo
-sudo docker exec cli peer chaincode install -n chaincode -v 1.0 -p chaincode/packaged chaincode.tar.gz
-sudo docker exec cli cp /opt/gopath/src/chaincode/packaged/chaincode.tar.gz /usr/local/src
-#echo
-#printf " ${GREEN}Instantiating chaincode...${NC}\n"
-#echo
-#sudo docker exec peer1.iapeer.com GO111MODULE=auto peer chaincode instantiate -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":["InitLedger"]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt #/etc/hyperledger/fabric/msp/orderer-tlsintermediatecerts/orderer-tlsca-server.crt    
+#sudo docker exec cli peer chaincode install --name chaincode -v 1.0 -p chaincode/packaged
+sudo docker exec cli peer lifecycle chaincode install
+#sudo docker exec cli cp /opt/gopath/src/chaincode/packaged/chaincode.tar.gz /usr/local/src
+echo
+printf " ${GREEN}Instantiating chaincode...${NC}\n"
+echo
+sudo docker exec cli peer chaincode instantiate -C default -n chaincode -l "golang" -v 1.0 -c '{"Args":[""]}' --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/iaorderer/msp/tlscacerts/orderer-tlsca-server.crt #/etc/hyperledger/fabric/msp/orderer-tlsintermediatecerts/orderer-tlsca-server.crt 
 echo
 echo "########################"
 echo "#### Finished Build ####"

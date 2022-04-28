@@ -10,15 +10,17 @@ const server = http.createServer((req, res) => {
 
     if (req.method == 'GET') {
         var fileUrl;
-        if (req.url == '/') fileUrl = '/index.html';
+        if (req.url == '/') fileUrl = 'index.html';
+        else if (req.url == '/login.html') fileUrl = 'login.html';
+        else if (req.url == '/register.html') fileUrl = 'register.html';
         else fileUrl = req.url;
 
-        var filePath = path.resolve('./public' + fileUrl);
+        var filePath = path.resolve(fileUrl);
         const fileExt = path.extname(filePath);
         if (fileExt == '.html') {
             fs.exists(filePath, (exists) => {
                 if (!exists) {
-                    filePath = path.resolve('./public/404.html');
+                    filePath = path.resolve('404.html');
                     res.statusCode = 404;
                     res.setHeader('Content-Type', 'text/html');
                     fs.createReadStream(filePath).pipe(res);
@@ -32,17 +34,17 @@ const server = http.createServer((req, res) => {
         else if (fileExt == '.css') {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/css');
-            fs.createReadStream(filePath).pipe(res);
+            fs.createReadStream("css"+filePath).pipe(res);
         }
         else {
-            filePath = path.resolve('./public/404.html');
+            filePath = path.resolve('404.html');
             res.statusCode = 404;
             res.setHeader('Content-Type', 'text/html');
             fs.createReadStream(filePath).pipe(res);
         }
     }
     else {
-        filePath = path.resolve('./public/404.html');
+        filePath = path.resolve('404.html');
         res.statusCode = 404;
         res.setHeader('Content-Type', 'text/html');
         fs.createReadStream(filePath).pipe(res);
