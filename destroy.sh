@@ -21,6 +21,16 @@ echo "#### Pruning Volumes and Images ####"
 echo "####################################"
 echo
 echo " ---Volumes"
+sudo docker volume rm insurappremake_ca.orderer.insurapp.com -f
+sudo docker volume rm insurappremake_ca.peer.insurapp.com -f
+sudo docker volume rm insurappremake_orderer1.iaorderer.com -f
+sudo docker volume rm insurappremake_orderer2.iaorderer.com -f
+sudo docker volume rm insurappremake_orderer3.iaorderer.com -f
+sudo docker volume rm insurappremake_peer1.iapeer.com -f
+sudo docker volume rm insurappremake_peer2.iapeer.com -f
+sudo docker volume rm insurappremake_peer3.iapeer.com -f
+sudo docker volume rm insurappremake_tlsca.orderer.insurapp.com -f
+sudo docker volume rm insurappremake_tlsca.peer.insurapp.com -f
 sudo docker volume prune -f
 echo
 echo " ---Images"

@@ -17,10 +17,11 @@ echo "#### Configuring Web Application ####"
 echo "#####################################"
 echo
 sudo docker build -t insurapp-web ./public
-sudo docker run --name InsurApp-Web --network=host -p 3080:3080 -d insurapp-web
+sudo docker run --name InsurApp-Web -p 3080:3080 -d insurapp-web
 sudo docker start InsurApp-Web
 echo
 printf " ${GREEN}Web App Server enabled!${NC}\n"
+printf " Web Server Address: ${GREEN}192.168.1.22:3080${NC}\n"
 echo
 echo "#############################"
 echo "#### Starting CA Servers ####"
@@ -28,8 +29,8 @@ echo "#############################"
 echo
 printf " ${GREEN}Starting CA Containers...${NC}\n"
 sudo docker-compose -f docker-compose-ca.yaml up -d
-printf " ${GREEN}CA Containers up! Waiting 10s for containers to initialize...${NC}\n"
-sleep 10
+printf " ${GREEN}CA Containers up! Waiting 15s for containers to initialize...${NC}\n"
+sleep 15
 echo
 echo "#########################"
 echo "#### Configuring CAs ####"
@@ -133,12 +134,12 @@ echo "##########################"
 echo "#### Configuring MSPs ####"
 echo "##########################"
 echo
-printf " ${GREEN}Copyting CA Server Certs...${NC}\n"
+printf " ${GREEN}Copying CA Server Certs...${NC}\n"
 sudo cp ca/orderer-ca-server.crt orderers/iaorderer/msp/cacerts
 sudo cp ca/peer-ca-server.crt peers/iapeer/msp/cacerts
 sudo cp tlsca/orderer-tlsca-server.crt orderers/iaorderer/msp/tlscacerts
 sudo cp tlsca/peer-tlsca-server.crt peers/iapeer/msp/tlscacerts
-printf " ${GREEN}Copyting Orderer Admin Private Keys...${NC}\n"
+printf " ${GREEN}Copying Orderer Admin Private Keys...${NC}\n"
 sudo cp orderers/iaorderer/orderer1/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin1.pem
 sudo cp orderers/iaorderer/orderer2/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin2.pem
 sudo cp orderers/iaorderer/orderer3/msp/user/admin/signcerts/cert.pem orderers/iaorderer/msp/admincerts/ordereradmin3.pem
@@ -173,6 +174,9 @@ echo "#### Starting Blockchain Network ####"
 echo "#####################################"
 echo
 sudo docker-compose up -d
+sudo docker cp /home/ewan/Documents/InsurAppRemake/coreyamls/peer1/core.yaml peer1.iapeer.com:/etc/hyperledger/fabric
+sudo docker cp /home/ewan/Documents/InsurAppRemake/coreyamls/peer2/core.yaml peer2.iapeer.com:/etc/hyperledger/fabric
+sudo docker cp /home/ewan/Documents/InsurAppRemake/coreyamls/peer3/core.yaml peer3.iapeer.com:/etc/hyperledger/fabric
 echo
 printf " ${GREEN}All peers created! - Waiting 5s for peers to initalize${NC}\n"
 sleep 5
@@ -198,8 +202,12 @@ echo
 printf " ${GREEN}Installing chaincode...${NC}\n"
 echo
 #sudo docker exec cli peer chaincode install --name chaincode -v 1.0 -p chaincode/packaged
-sudo docker exec cli peer lifecycle chaincode install
+sudo docker exec cli peer lifecycle chaincode install chaincode.tar.gz
 #sudo docker exec cli cp /opt/gopath/src/chaincode/packaged/chaincode.tar.gz /usr/local/src
+printf " ${GREEN}Approving chaincode...${NC}\n"
+sudo docker exec cli peer lifecycle chaincode approveformyorg
+printf " ${GREEN}Commiting chaincode...${NC}\n"
+sudo docker exec cli peer lifecycle chaincode commit
 echo
 printf " ${GREEN}Instantiating chaincode...${NC}\n"
 echo

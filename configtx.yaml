@@ -8,8 +8,8 @@ Organizations:
                 Type: Signature
                 Rule: "OR('iaorderer.member')"
             Writers:
-                Type: Signature
-                Rule: "OR('iaorderer.member','iapeer.member')"
+                Type: ImplicitMeta
+                Rule: "ANY Writers"
             Admins:
                 Type: Signature
                 Rule: "OR('iaorderer.member')"
@@ -23,8 +23,8 @@ Organizations:
                     Type: Signature
                     Rule: "OR('iapeer.member')"
                 Writers:
-                    Type: Signature
-                    Rule: "OR('iapeer.member','iaorderer.member')"
+                    Type: ImplicitMeta
+                    Rule: "ANY Writers"
                 Admins:
                     Type: Signature
                     Rule: "OR('iapeer.member')"
@@ -158,36 +158,38 @@ Channel: &ChannelDefaults
 #
 ################################################################################
 Profiles:
-    default:
-        Consortium: SampleConsortium
-        <<: *ChannelDefaults
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *iapeer
-            Capabilities:
-                <<: *ApplicationCapabilities
-    genesis:
-        <<: *ChannelDefaults
-        Capabilities:
-            <<: *ChannelCapabilities
-        Orderer:
-            <<: *OrdererDefaults
-            OrdererType: etcdraft
-            Addresses:
-                - orderer1.iaorderer.com:7050
-                - orderer2.iaorderer.com:7050
-                - orderer3.iaorderer.com:7050
-            Organizations:
-                - *iaorderer
-            Capabilities:
-                <<: *OrdererCapabilities
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-            - <<: *iaorderer
-            - <<: *iapeer
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                - *iapeer
+  default:
+    Consortium: SampleConsortium
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *iapeer
+      Capabilities:
+        <<: *ApplicationCapabilities
+
+  genesis:
+    <<: *ChannelDefaults
+    Capabilities:
+      <<: *ChannelCapabilities
+    Orderer:
+      <<: *OrdererDefaults
+      OrdererType: etcdraft
+      Addresses:
+        - orderer1.iaorderer.com:7050
+        - orderer2.iaorderer.com:7050
+        - orderer3.iaorderer.com:7050
+      Organizations:
+        - *iaorderer
+      Capabilities:
+        <<: *OrdererCapabilities
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *iaorderer
+        - *iapeer
+
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+          - *iapeer

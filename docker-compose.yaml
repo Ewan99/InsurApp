@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 volumes:
   orderer1.iaorderer.com:
   orderer2.iaorderer.com:
@@ -12,7 +12,7 @@ services:
   orderer1.iaorderer.com:
     container_name: orderer1.iaorderer.com
     hostname: orderer1.iaorderer.com
-    image: hyperledger/fabric-orderer:2.2
+    image: hyperledger/fabric-orderer:latest
     environment:
       - FABRIC_LOGGING_SPEC=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -41,7 +41,7 @@ services:
   orderer2.iaorderer.com:
     container_name: orderer2.iaorderer.com
     hostname: orderer2.iaorderer.com
-    image: hyperledger/fabric-orderer:2.2
+    image: hyperledger/fabric-orderer:latest
     environment:
       - FABRIC_LOGGING_SPEC=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -70,7 +70,7 @@ services:
   orderer3.iaorderer.com:
     container_name: orderer3.iaorderer.com
     hostname: orderer3.iaorderer.com
-    image: hyperledger/fabric-orderer:2.2
+    image: hyperledger/fabric-orderer:latest
     environment:
       - FABRIC_LOGGING_SPEC=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -100,7 +100,7 @@ services:
   peer1.iapeer.com:
     container_name: peer1.iapeer.com
     hostname: peer1.iapeer.com
-    image: hyperledger/fabric-peer:2.2
+    image: hyperledger/fabric-peer:latest
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -121,6 +121,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.iapeer.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.iapeer.com:7051
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_PEER_LOCALMSPID=iapeer
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
@@ -141,7 +142,7 @@ services:
   peer2.iapeer.com:
     container_name: peer2.iapeer.com
     hostname: peer2.iapeer.com
-    image: hyperledger/fabric-peer:2.2
+    image: hyperledger/fabric-peer:latest
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=DEBUG
@@ -161,6 +162,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.iapeer.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.iapeer.com:7051
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_PEER_LOCALMSPID=iapeer
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
@@ -180,7 +182,7 @@ services:
   peer3.iapeer.com:
     container_name: peer3.iapeer.com
     hostname: peer3.iapeer.com
-    image: hyperledger/fabric-peer:2.2
+    image: hyperledger/fabric-peer:latest
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=DEBUG
@@ -200,6 +202,7 @@ services:
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer3.iapeer.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer3.iapeer.com:7051
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_PEER_LOCALMSPID=iapeer
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
@@ -219,7 +222,7 @@ services:
   
   cli:
     container_name: cli
-    image: hyperledger/fabric-tools:2.2
+    image: hyperledger/fabric-tools:latest
     tty: true
     stdin_open: true
     environment:
